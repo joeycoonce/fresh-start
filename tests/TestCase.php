@@ -3,8 +3,8 @@
 namespace JoeyCoonce\FreshStart\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use JoeyCoonce\FreshStart\FreshStartServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

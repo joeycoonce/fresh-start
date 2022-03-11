@@ -2,10 +2,10 @@
 
 namespace JoeyCoonce\FreshStart\Commands;
 
-use JoeyCoonce\FreshStart\Helpers;
-use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
+use JoeyCoonce\FreshStart\Helpers;
+use Symfony\Component\Process\Process;
 
 class FreshStartCommand extends Command
 {
@@ -32,11 +32,11 @@ class FreshStartCommand extends Command
 
         // Reconfigure
         $this->reconfigure();
-        
+
         $this->comment('All done');
 
         $this->line('');
-        
+
         $this->comment('Please execute the "npm install && npm run dev" command to build your assets.');
 
         return self::SUCCESS;
@@ -79,8 +79,8 @@ class FreshStartCommand extends Command
     protected function database()
     {
         $stubsPath = Helpers::getStubsPath();
-        (new Filesystem)->copyDirectory($stubsPath.'/database/migrations', database_path('migrations'));
-        (new Filesystem)->copyDirectory($stubsPath.'/database/factories', database_path('factories'));
+        (new Filesystem())->copyDirectory($stubsPath.'/database/migrations', database_path('migrations'));
+        (new Filesystem())->copyDirectory($stubsPath.'/database/factories', database_path('factories'));
     }
 
     protected function permission()
@@ -100,11 +100,10 @@ class FreshStartCommand extends Command
         $this->callSilent('vendor:publish', ['--provider' => 'Backpack\PermissionManager\PermissionManagerServiceProvider']);
 
         // In case Backpack publishes lang to resources/lang...
-        if((new Filesystem)->exists(resource_path('lang')))
-        {
+        if ((new Filesystem())->exists(resource_path('lang'))) {
             // (new Filesystem)->ensureDirectoryExists(base_path('lang'));
-            (new Filesystem)->copyDirectory(resource_path('lang'), base_path('lang'));
-            (new Filesystem)->deleteDirectory(resource_path('lang'));
+            (new Filesystem())->copyDirectory(resource_path('lang'), base_path('lang'));
+            (new Filesystem())->deleteDirectory(resource_path('lang'));
         }
 
         $this->callSilent('migrate', ['--no-interaction' => true]);
@@ -118,29 +117,29 @@ class FreshStartCommand extends Command
         $stubsPath = Helpers::getStubsPath();
 
         // Ensure Directories...
-        (new Filesystem)->ensureDirectoryExists(app_path('Helpers'));
+        (new Filesystem())->ensureDirectoryExists(app_path('Helpers'));
 
         // Copy stubs
-        (new Filesystem)->copyDirectory($stubsPath.'/resources/views', resource_path('views'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Controllers', app_path('Http/Controllers'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Requests', app_path('Http/Requests'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Middleware', app_path('Http/Middleware'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Helpers', app_path('Helpers'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Models', app_path('Models'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Providers', app_path('Providers'));
+        (new Filesystem())->copyDirectory($stubsPath.'/resources/views', resource_path('views'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Http/Controllers', app_path('Http/Controllers'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Http/Requests', app_path('Http/Requests'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Http/Middleware', app_path('Http/Middleware'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Helpers', app_path('Helpers'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Models', app_path('Models'));
+        (new Filesystem())->copyDirectory($stubsPath.'/app/Providers', app_path('Providers'));
 
         // Install Helper Provider...
         Helpers::installServiceProviderAfter('RouteServiceProvider', 'HelperServiceProvider');
 
         // Restructure status alerts
-        if ((new Filesystem)->exists(resource_path('/views/components/auth-session-status.blade.php'))) {
-            (new Filesystem)->delete(resource_path('/views/components/auth-session-status.blade.php'));
+        if ((new Filesystem())->exists(resource_path('/views/components/auth-session-status.blade.php'))) {
+            (new Filesystem())->delete(resource_path('/views/components/auth-session-status.blade.php'));
         }
-        if ((new Filesystem)->exists(resource_path('/views/components/auth-validation-errors.blade.php'))) {
-            (new Filesystem)->delete(resource_path('/views/components/auth-validation-errors.blade.php'));
+        if ((new Filesystem())->exists(resource_path('/views/components/auth-validation-errors.blade.php'))) {
+            (new Filesystem())->delete(resource_path('/views/components/auth-validation-errors.blade.php'));
         }
 
-        // Update configs... 
+        // Update configs...
         Helpers::replaceInFile("'guard' => 'backpack',", "'guard' => null,", config_path('backpack/base.php'));
 
         Helpers::replaceInFile('
@@ -161,7 +160,6 @@ class FreshStartCommand extends Command
     */
     'super_admin_role' => 'Super Admin',
 ];", config_path('permission.php'));
-
     }
 
     /**
@@ -190,7 +188,7 @@ class FreshStartCommand extends Command
             });
     }
 
-        /**
+    /**
      * Removes the given NPM Packages from the application.
      *
      * @param  mixed  $packages

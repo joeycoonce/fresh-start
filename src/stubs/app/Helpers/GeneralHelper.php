@@ -1,19 +1,18 @@
 <?php
 
 use Spatie\Permission\Models\Permission;
+
 // use Carbon\Carbon;
 
 if (! function_exists('as_array')) {
     function as_array(mixed $value)
     {
-        if (!$value)
-        {
+        if (! $value) {
             return [];
         }
 
-        if (!is_array($value))
-        {
-            return array($value);
+        if (! is_array($value)) {
+            return [$value];
         }
 
         return $value;
@@ -31,12 +30,9 @@ if (! function_exists('role_exists')) {
      */
     function role_exists($role)
     {
-        try
-        {
+        try {
             Spatie\Permission\Models\Role::findByName($role)->get();
-        }
-        catch(Spatie\Permission\Exceptions\RoleDoesNotExist $e)
-        {
+        } catch (Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
             return false;
         }
 
@@ -55,12 +51,9 @@ if (! function_exists('permission_exists')) {
      */
     function permission_exists($permission)
     {
-        try
-        {
+        try {
             Spatie\Permission\Models\Permission::findByName($permission)->get();
-        }
-        catch(Spatie\Permission\Exceptions\PermissionDoesNotExist $e)
-        {
+        } catch (Spatie\Permission\Exceptions\PermissionDoesNotExist $e) {
             return false;
         }
 

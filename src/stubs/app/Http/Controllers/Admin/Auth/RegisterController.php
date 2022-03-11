@@ -10,8 +10,6 @@ use Validator;
 
 class RegisterController extends Controller
 {
-    protected $data = []; // the information we send to the view
-
     /*
     |--------------------------------------------------------------------------
     | Register Controller
@@ -23,6 +21,7 @@ class RegisterController extends Controller
     |
     */
     use RegistersUsers;
+    protected $data = []; // the information we send to the view
 
     /**
      * Create a new controller instance.
@@ -54,10 +53,10 @@ class RegisterController extends Controller
         $email_validation = backpack_authentication_column() == 'email' ? 'email|' : '';
 
         return Validator::make($data, [
-            'first_name'                       => 'required|max:255',
-            'last_name'                        => 'required|max:255',
-            backpack_authentication_column()   => 'required|'.$email_validation.'max:255|unique:'.$users_table,
-            'password'                         => 'required|min:6|confirmed',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            backpack_authentication_column() => 'required|'.$email_validation.'max:255|unique:'.$users_table,
+            'password' => 'required|min:6|confirmed',
         ]);
     }
 
@@ -73,10 +72,10 @@ class RegisterController extends Controller
         $user = new $user_model_fqn();
 
         return $user->create([
-            'first_name'                       => $data['first_name'],
-            'last_name'                        => $data['last_name'],
-            backpack_authentication_column()   => $data[backpack_authentication_column()],
-            'password'                         => bcrypt($data['password']),
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            backpack_authentication_column() => $data[backpack_authentication_column()],
+            'password' => bcrypt($data['password']),
         ]);
     }
 

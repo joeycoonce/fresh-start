@@ -52,8 +52,8 @@ php artisan vendor:publish --tag="fresh-start-views"
 ## Usage
 
 ```php
-$freshStart = new Joeycoonce\FreshStart();
-echo $freshStart->echoPhrase('Hello, Joeycoonce!');
+$freshStart = new JoeyCoonce\FreshStart();
+echo $freshStart->echoPhrase('Hello, JoeyCoonce!');
 ```
 
 ## Testing

@@ -1,5 +1,5 @@
 <?php
 
-use Joeycoonce\FreshStart\Tests\TestCase;
+use JoeyCoonce\FreshStart\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

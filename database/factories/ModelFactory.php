@@ -1,6 +1,6 @@
 <?php
 
-namespace Joeycoonce\FreshStart\Database\Factories;
+namespace JoeyCoonce\FreshStart\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

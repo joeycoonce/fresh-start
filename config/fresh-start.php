@@ -1,5 +1,5 @@
 <?php
-// config for Joeycoonce/FreshStart
+// config for JoeyCoonce/FreshStart
 return [
 
 ];

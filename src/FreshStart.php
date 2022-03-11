@@ -1,6 +1,6 @@
 <?php
 
-namespace Joeycoonce\FreshStart;
+namespace JoeyCoonce\FreshStart;
 
 class FreshStart
 {

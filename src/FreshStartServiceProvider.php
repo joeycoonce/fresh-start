@@ -1,10 +1,10 @@
 <?php
 
-namespace Joeycoonce\FreshStart;
+namespace JoeyCoonce\FreshStart;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Joeycoonce\FreshStart\Commands\FreshStartCommand;
+use JoeyCoonce\FreshStart\Commands\FreshStartCommand;
 
 class FreshStartServiceProvider extends PackageServiceProvider
 {

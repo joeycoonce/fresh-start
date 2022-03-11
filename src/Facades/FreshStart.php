@@ -1,11 +1,11 @@
 <?php
 
-namespace Joeycoonce\FreshStart\Facades;
+namespace JoeyCoonce\FreshStart\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Joeycoonce\FreshStart\FreshStart
+ * @see \JoeyCoonce\FreshStart\FreshStart
  */
 class FreshStart extends Facade
 {

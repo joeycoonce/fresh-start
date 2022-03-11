@@ -1,10 +1,10 @@
 <?php
 
-namespace Joeycoonce\FreshStart\Tests;
+namespace JoeyCoonce\FreshStart\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Joeycoonce\FreshStart\FreshStartServiceProvider;
+use JoeyCoonce\FreshStart\FreshStartServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Joeycoonce\\FreshStart\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'JoeyCoonce\\FreshStart\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

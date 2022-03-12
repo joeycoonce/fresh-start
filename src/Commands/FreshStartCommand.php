@@ -87,6 +87,15 @@ class FreshStartCommand extends Command
     {
         $this->requireComposerPackages('backpack/permissionmanager');
         $this->callSilent('vendor:publish', ['--provider' => 'Spatie\Permission\PermissionServiceProvider']);
+    
+        // Update config...
+        Helpers::replaceInFile('];', "
+    /*
+    * Custom
+    */
+    'super_admin_role' => 'Super Admin',
+];", config_path('permission.php'));
+    
     }
 
     protected function backpack()
@@ -106,6 +115,19 @@ class FreshStartCommand extends Command
             (new Filesystem)->copyDirectory(resource_path('lang'), base_path('lang'));
             (new Filesystem)->deleteDirectory(resource_path('lang'));
         }
+
+        Helpers::replaceInFile("'guard' => 'backpack',", "'guard' => null,", config_path('backpack/base.php'));
+        Helpers::replaceInFile('
+];', "
+    /*
+    |--------------------------------------------------------------------------
+    | Custom
+    |--------------------------------------------------------------------------
+    |
+    */
+    'backpack_access_permission' => 'access backend',
+    
+];", config_path('backpack/permissionmanager.php'));
 
         $this->callSilent('migrate', ['--no-interaction' => true]);
     }
@@ -128,6 +150,7 @@ class FreshStartCommand extends Command
         (new Filesystem)->copyDirectory($stubsPath.'/app/Helpers', app_path('Helpers'));
         (new Filesystem)->copyDirectory($stubsPath.'/app/Models', app_path('Models'));
         (new Filesystem)->copyDirectory($stubsPath.'/app/Providers', app_path('Providers'));
+        (new Filesystem)->copyDirectory($stubsPath.'/tests', base_path('tests'));
 
         // Install Helper Provider...
         Helpers::installServiceProviderAfter('RouteServiceProvider', 'HelperServiceProvider');
@@ -139,28 +162,6 @@ class FreshStartCommand extends Command
         if ((new Filesystem)->exists(resource_path('/views/components/auth-validation-errors.blade.php'))) {
             (new Filesystem)->delete(resource_path('/views/components/auth-validation-errors.blade.php'));
         }
-
-        // Update configs... 
-        Helpers::replaceInFile("'guard' => 'backpack',", "'guard' => null,", config_path('backpack/base.php'));
-
-        Helpers::replaceInFile('
-];', "
-    /*
-    |--------------------------------------------------------------------------
-    | Custom
-    |--------------------------------------------------------------------------
-    |
-    */
-    'backpack_access_permission' => 'access backend',
-    
-];", config_path('backpack/permissionmanager.php'));
-
-        Helpers::replaceInFile('];', "
-    /*
-    * Custom
-    */
-    'super_admin_role' => 'Super Admin',
-];", config_path('permission.php'));
 
     }
 

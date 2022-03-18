@@ -2,9 +2,9 @@
 
 namespace JoeyCoonce\FreshStart;
 
+use JoeyCoonce\FreshStart\Commands\FreshStartCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use JoeyCoonce\FreshStart\Commands\FreshStartCommand;
 
 class FreshStartServiceProvider extends PackageServiceProvider
 {

@@ -9,12 +9,17 @@ use Illuminate\Console\Command;
 
 class FreshStartCommand extends Command
 {
-    public $signature = 'fresh-start {--composer=global : Absolute path to the Composer binary which should be used to install packages}';
+    public $signature = 'fresh-start
+                            {--composer=global} : Absolute path to the Composer binary which should be used to install packages
+                            {--livewire=false} : Installs Livewire
+                            {--backpack=true} ; Installs backpack';
 
     public $description = 'My command';
 
     public function handle(): int
     {
+
+        // dd($this->option('composer'), $this->option('livewire'), $this->option('backpack'));
         // Configure Session...
         $this->configureSession();
 
@@ -28,10 +33,23 @@ class FreshStartCommand extends Command
         $this->permission();
 
         // Install Backpack
-        $this->backpack();
+        if($this->optionAsBool('backpack'))
+        {
+            $this->info('Installing Backpack');
+            $this->backpack();
+        }
+
+        // Install Livewire
+        if($this->optionAsBool('livewire'))
+        {
+            $this->info('Installing Livewire');
+            $this->livewire();
+        }
 
         // Reconfigure
         $this->reconfigure();
+
+        $this->callSilent('vendor:publish', ['--tag' => 'fresh-start-config']);
         
         $this->comment('All done');
 
@@ -73,6 +91,10 @@ class FreshStartCommand extends Command
 
         $this->removeNpmPackages(['tailwindcss', '@tailwindcss/forms']);
 
+        $stubsPath = Helpers::getStubsPath();
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Controllers/Auth', app_path('Http/Controllers/Auth'));
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Requests/Auth', app_path('Http/Requests/Auth'));
+
         $this->info('Scaffolding installed successfully.');
     }
 
@@ -88,13 +110,17 @@ class FreshStartCommand extends Command
         $this->requireComposerPackages('backpack/permissionmanager');
         $this->callSilent('vendor:publish', ['--provider' => 'Spatie\Permission\PermissionServiceProvider']);
     
-        // Update config...
-        Helpers::replaceInFile('];', "
-    /*
-    * Custom
-    */
-    'super_admin_role' => 'Super Admin',
-];", config_path('permission.php'));
+        $stubsPath = Helpers::getStubsPath();
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Middleware', app_path('Http/Middleware'));
+        (new Filesystem)->copy($stubsPath.'/app/Providers/AuthServiceProvider.php', app_path('Providers/AuthServiceProvider.php'));
+
+//         // Update config...
+//         Helpers::replaceInFile('];', "
+//     /*
+//     * Custom
+//     */
+//     'super_admin_role' => 'Super Admin',
+// ];", config_path('permission.php'));
     
     }
 
@@ -116,20 +142,46 @@ class FreshStartCommand extends Command
             (new Filesystem)->deleteDirectory(resource_path('lang'));
         }
 
+        $stubsPath = Helpers::getStubsPath();
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Controllers/Admin', app_path('Http/Controllers/Admin'));
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Requests/Admin', app_path('Http/Requests/Admin'));
+        (new Filesystem)->copy($stubsPath.'/app/Providers/AppServiceProvider.php', app_path('Providers/AppServiceProvider.php'));
+
         Helpers::replaceInFile("'guard' => 'backpack',", "'guard' => null,", config_path('backpack/base.php'));
-        Helpers::replaceInFile('
-];', "
-    /*
-    |--------------------------------------------------------------------------
-    | Custom
-    |--------------------------------------------------------------------------
-    |
-    */
-    'backpack_access_permission' => 'access backend',
+//         Helpers::replaceInFile('
+// ];', "
+//     /*
+//     |--------------------------------------------------------------------------
+//     | Custom
+//     |--------------------------------------------------------------------------
+//     |
+//     */
+//     'backpack_access_permission' => 'access backend',
     
-];", config_path('backpack/permissionmanager.php'));
+// ];", config_path('backpack/permissionmanager.php'));
 
         $this->callSilent('migrate', ['--no-interaction' => true]);
+    }
+
+    protected function livewire()
+    {
+        $this->requireComposerPackages('livewire/livewire');
+        Helpers::replaceInFile("</head>", "
+        @livewireStyles
+    </head>", resource_path('views/layouts/app.blade.php'));
+
+        Helpers::replaceInFile("</body>", "
+        @livewireScripts
+    </head>", resource_path('views/layouts/app.blade.php'));
+
+        Helpers::replaceInFile("</head>", "
+        @livewireStyles
+    </head>", resource_path('views/layouts/guest.blade.php'));
+
+        Helpers::replaceInFile("</body>", "
+        @livewireScripts
+    </head>", resource_path('views/layouts/guest.blade.php'));
+
     }
 
     /*
@@ -139,20 +191,15 @@ class FreshStartCommand extends Command
     {
         $stubsPath = Helpers::getStubsPath();
 
-        // Ensure Directories...
-        (new Filesystem)->ensureDirectoryExists(app_path('Helpers'));
-
         // Copy stubs
         (new Filesystem)->copyDirectory($stubsPath.'/resources/views', resource_path('views'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Controllers', app_path('Http/Controllers'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Requests', app_path('Http/Requests'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Http/Middleware', app_path('Http/Middleware'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Helpers', app_path('Helpers'));
         (new Filesystem)->copyDirectory($stubsPath.'/app/Models', app_path('Models'));
-        (new Filesystem)->copyDirectory($stubsPath.'/app/Providers', app_path('Providers'));
         (new Filesystem)->copyDirectory($stubsPath.'/tests', base_path('tests'));
-
+        
         // Install Helper Provider...
+        // (new Filesystem)->ensureDirectoryExists(app_path('Helpers'));
+        (new Filesystem)->copyDirectory($stubsPath.'/app/Helpers', app_path('Helpers'));
+        (new Filesystem)->copy($stubsPath.'/app/Providers/HelperServiceProvider.php', app_path('Providers/HelperServiceProvider.php'));
         Helpers::installServiceProviderAfter('RouteServiceProvider', 'HelperServiceProvider');
 
         // Restructure status alerts
@@ -209,5 +256,11 @@ class FreshStartCommand extends Command
             ->run(function ($type, $output) {
                 $this->output->write($output);
             });
+    }
+
+    protected function optionAsBool(string $key): bool
+    {
+        $option = $this->option($key);
+        return ($option === null) || filter_var($option, FILTER_VALIDATE_BOOLEAN);
     }
 }

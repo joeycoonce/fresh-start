@@ -18,7 +18,7 @@ trait UserAttribute
     protected function isAdmin(): Attribute
     {
         return new Attribute(
-            get: fn () => config('backpack.permissionmanager.backpack_access_permission') && permission_exists(config('backpack.permissionmanager.backpack_access_permission')) ? $this->can(config('backpack.permissionmanager.backpack_access_permission')) : true,
+            get: fn () => config('fresh-start.backpack.permissionmanager.backpack_access_permission') && permission_exists(config('fresh-start.backpack.permissionmanager.backpack_access_permission')) ? $this->can(config('fresh-start.backpack.permissionmanager.backpack_access_permission')) : true,
         );
     }
 

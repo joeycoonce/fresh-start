@@ -18,8 +18,8 @@ class FreshStartServiceProvider extends PackageServiceProvider
         $package
             ->name('fresh-start')
             ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_fresh-start_table')
+            // ->hasViews()
+            // ->hasMigration('create_fresh-start_table')
             ->hasCommand(FreshStartCommand::class);
     }
 }

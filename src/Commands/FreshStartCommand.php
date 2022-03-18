@@ -111,14 +111,6 @@ class FreshStartCommand extends Command
         $stubsPath = Helpers::getStubsPath();
         (new Filesystem())->copyDirectory($stubsPath.'/app/Http/Middleware', app_path('Http/Middleware'));
         (new Filesystem())->copy($stubsPath.'/app/Providers/AuthServiceProvider.php', app_path('Providers/AuthServiceProvider.php'));
-
-//         // Update config...
-//         Helpers::replaceInFile('];', "
-//     /*
-//     * Custom
-//     */
-//     'super_admin_role' => 'Super Admin',
-// ];", config_path('permission.php'));
     }
 
     protected function backpack()
@@ -144,18 +136,6 @@ class FreshStartCommand extends Command
         (new Filesystem())->copy($stubsPath.'/app/Providers/AppServiceProvider.php', app_path('Providers/AppServiceProvider.php'));
 
         Helpers::replaceInFile("'guard' => 'backpack',", "'guard' => null,", config_path('backpack/base.php'));
-//         Helpers::replaceInFile('
-        // ];', "
-//     /*
-//     |--------------------------------------------------------------------------
-//     | Custom
-//     |--------------------------------------------------------------------------
-//     |
-//     */
-//     'backpack_access_permission' => 'access backend',
-
-        // ];", config_path('backpack/permissionmanager.php'));
-
         $this->callSilent('migrate', ['--no-interaction' => true]);
     }
 

@@ -36,20 +36,20 @@ class Helpers
     //     );
     // }
 
-//     /**
-//      * Delete the "node_modules" directory and remove the associated lock files.
-//      *
-//      * @return void
-//      */
-//     public static function flushNodeModules()
-//     {
-//         tap(new Filesystem, function ($files) {
-//             $files->deleteDirectory(base_path('node_modules'));
+    //     /**
+    //      * Delete the "node_modules" directory and remove the associated lock files.
+    //      *
+    //      * @return void
+    //      */
+    //     public static function flushNodeModules()
+    //     {
+    //         tap(new Filesystem, function ($files) {
+    //             $files->deleteDirectory(base_path('node_modules'));
 
-//             $files->delete(base_path('yarn.lock'));
-//             $files->delete(base_path('package-lock.json'));
-//         });
-//     }
+    //             $files->delete(base_path('yarn.lock'));
+    //             $files->delete(base_path('package-lock.json'));
+    //         });
+    //     }
 
     /**
      * Replace a given string within a given file.
